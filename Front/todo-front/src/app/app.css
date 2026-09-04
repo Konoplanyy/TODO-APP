@@ -1,0 +1,27 @@
+.main-container {
+  display: flex;
+  height: 100vh;
+  gap: 20px;
+}
+.left-side{
+  background: aqua;
+  flex: 1;
+  height: 100%;
+}
+.right-side{
+  background: burlywood;
+  flex: 5;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+.logo_and_text{
+  width: 50ch;
+  display: flex;
+  text-align: center;
+  gap: 20px;
+}
