@@ -1,0 +1,8 @@
+<div class="container px-4 py-2 rounded-lg transition-colors shadow-sm">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8e8d8b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-search">
+	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+	<path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+	<path d="M21 21l-6 -6" />
+  </svg>
+  <input type="text" class="search-input text-lg font-bold focus:outline-none h-7" placeholder="Search tasks" [value]="value()" (input)="valueChange.emit($any($event.target).value)" aria-label="Search tasks" />
+</div>

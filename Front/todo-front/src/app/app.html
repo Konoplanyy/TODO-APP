@@ -1,32 +1,99 @@
-
-<main class="main" style="height: 100%">
-  <div class="content" style="height: 100%">
-    <div class="main-container">
-      <div class="left-side">
-        <div class="vertical-column">
-          <div class="logo_and_text">
-            <span class="material-symbols-outlined">
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200v-560 454-85 191Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v320h-80v-320H200v560h280v80H200Zm494 40L552-222l57-56 85 85 170-170 56 57L694-80ZM348.5-451.5Q360-463 360-480t-11.5-28.5Q337-520 320-520t-28.5 11.5Q280-497 280-480t11.5 28.5Q303-440 320-440t28.5-11.5Zm0-160Q360-623 360-640t-11.5-28.5Q337-680 320-680t-28.5 11.5Q280-657 280-640t11.5 28.5Q303-600 320-600t28.5-11.5ZM440-440h240v-80H440v80Zm0-160h240v-80H440v80Z"/></svg>
-            </span>
-            <h1>
-              My tasks
-            </h1>
-
-          </div>
-          <div class="tasks-category-container">
-
-          </div>
-          <div class="add-category">
-            <button>+ New category</button>
-          </div>
-        </div>
-      </div>
-      <div class="right-side">
-asd
-      </div>
+@if (!auth.user()) {
+  <main class="auth-screen">
+    <div class="auth-card">
+      <div class="brand"><span class="brand-icon">✓</span><h1>My tasks</h1></div>
+      <h2>{{authMode === 'login' ? 'Welcome back' : 'Create an account'}}</h2>
+      <p class="muted">Keep your day organized in one place.</p>
+      <form (ngSubmit)="submitAuth()">
+        @if (authMode === 'register') {
+          <label>Username<input name="username" [(ngModel)]="username" required autocomplete="username" /></label>
+        }
+        <label>Email<input name="email" type="email" [(ngModel)]="email" required autocomplete="email" /></label>
+        <label>Password<input name="password" type="password" [(ngModel)]="password" required minlength="6" [autocomplete]="authMode === 'login' ? 'current-password' : 'new-password'" /></label>
+        @if (errorMessage) { <p class="error" role="alert">{{errorMessage}}</p> }
+        <button class="primary-button" type="submit" [disabled]="authBusy">{{authBusy ? 'Please wait…' : authMode === 'login' ? 'Log in' : 'Register'}}</button>
+      </form>
+      <button class="text-button" type="button" (click)="authMode = authMode === 'login' ? 'register' : 'login'; errorMessage = ''">
+        {{authMode === 'login' ? 'Need an account? Register' : 'Already have an account? Log in'}}
+      </button>
     </div>
-  </div>
-</main>
+  </main>
+} @else {
+  <main class="main-container">
+    <aside class="left-side">
+      <div class="brand"><span class="brand-icon">✓</span><h1>My tasks</h1></div>
+      <div class="sidebar-heading">CATEGORIES</div>
+      <div class="tasks-category-container">
+        <app-category-btn main_text="All tasks" task_color="#6da7ec" [selected]="categoryId === ''" (clicked)="onCategoryChange('')" />
+        @for (category of categories; track category.id) {
+          <div class="category-row">
+            <app-category-btn [main_text]="category.name" [task_color]="category.color" [selected]="categoryId === category.id" (clicked)="onCategoryChange(category.id)" />
+            <button type="button" class="icon-button" (click)="openCategoryEditor(category)" [attr.aria-label]="'Edit ' + category.name">✎</button>
+            <button type="button" class="icon-button" (click)="deleteCategory(category)" [attr.aria-label]="'Delete ' + category.name">×</button>
+          </div>
+        }
+        <button type="button" class="add-category-btn" (click)="openCategoryEditor()">+ New category</button>
+      </div>
+      <div class="sidebar-footer"><span>{{auth.user()?.username}}</span><button type="button" class="text-button" (click)="logout()">Log out</button></div>
+    </aside>
 
+    <section class="right-side">
+      <div class="content-wrap">
+        <header class="toolbar">
+          <div><h2>Tasks</h2><p class="muted">{{totalCount}} {{totalCount === 1 ? 'task' : 'tasks'}}</p></div>
+          <button type="button" class="primary-button" (click)="openTaskEditor()" [disabled]="categories.length === 0">+ Add task</button>
+        </header>
+        <div class="navigation">
+          <app-search-field [value]="search" (valueChange)="onSearchChange($event)" />
+          <app-select-categories [categories]="categories" [selectedId]="categoryId" (selectedIdChange)="onCategoryChange($event)" />
+        </div>
+        @if (errorMessage) { <p class="error" role="alert">{{errorMessage}} <button type="button" (click)="errorMessage = ''">Dismiss</button></p> }
+        <div class="tasks-list">
+          @if (loading) { <p class="muted state-message">Loading tasks…</p> }
+          @else if (tasks.length === 0) { <p class="muted state-message">No tasks found. Add a task or change the filters.</p> }
+          @else {
+            @for (task of tasks; track task.id) {
+              <app-task-preview [task]="task" [category]="categoryFor(task)" (completedChange)="onCompletedChange($event)" (edit)="openTaskEditor($event)" (delete)="deleteTask($event)" />
+            }
+          }
+        </div>
+        @if (totalPages > 1) {
+          <nav class="pages" aria-label="Task pages">
+            <app-pagination-btn (Clicked)="onPageChange(selectedPage - 1)">‹</app-pagination-btn>
+            @for (page of visiblePages; track page) {
+              <app-pagination-btn [selected]="page === selectedPage" (Clicked)="onPageChange(page)">{{page}}</app-pagination-btn>
+            }
+            <app-pagination-btn (Clicked)="onPageChange(selectedPage + 1)">›</app-pagination-btn>
+          </nav>
+        }
+      </div>
+    </section>
+  </main>
 
-<router-outlet />
+  @if (taskEditorOpen) {
+    <div class="dialog-backdrop" (click)="taskEditorOpen = false">
+      <form class="dialog" (click)="$event.stopPropagation()" (ngSubmit)="saveTask()">
+        <h2>{{editingTaskId ? 'Edit task' : 'New task'}}</h2>
+        <label>Name<input name="taskName" [(ngModel)]="taskForm.name" required maxlength="200" /></label>
+        <label>Description<textarea name="description" [(ngModel)]="taskForm.description" rows="3"></textarea></label>
+        <label>Due date<input name="dueDate" type="datetime-local" [(ngModel)]="taskForm.dueDate" required /></label>
+        <label>Category<select name="categoryId" [(ngModel)]="taskForm.categoryId" required>
+          @for (category of categories; track category.id) { <option [value]="category.id">{{category.name}}</option> }
+        </select></label>
+        <label class="checkbox-label"><input name="completed" type="checkbox" [(ngModel)]="taskForm.isCompleted" /> Completed</label>
+        <div class="dialog-actions"><button type="button" class="secondary-button" (click)="taskEditorOpen = false">Cancel</button><button type="submit" class="primary-button" [disabled]="saving">Save</button></div>
+      </form>
+    </div>
+  }
+
+  @if (categoryEditorOpen) {
+    <div class="dialog-backdrop" (click)="categoryEditorOpen = false">
+      <form class="dialog" (click)="$event.stopPropagation()" (ngSubmit)="saveCategory()">
+        <h2>{{editingCategoryId ? 'Edit category' : 'New category'}}</h2>
+        <label>Name<input name="categoryName" [(ngModel)]="categoryForm.name" required maxlength="100" /></label>
+        <div class="color-field"><span>Color</span><app-color-picker [value]="categoryForm.color" (valueChange)="categoryForm.color = $event" /></div>
+        <div class="dialog-actions"><button type="button" class="secondary-button" (click)="categoryEditorOpen = false">Cancel</button><button type="submit" class="primary-button" [disabled]="saving">Save</button></div>
+      </form>
+    </div>
+  }
+}

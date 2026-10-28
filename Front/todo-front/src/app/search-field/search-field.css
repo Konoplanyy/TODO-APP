@@ -1,0 +1,11 @@
+.container{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+  border: #444444 1px solid;
+  width: fit-content;
+}
+.search-input{
+  color: #8e8d8b;
+}

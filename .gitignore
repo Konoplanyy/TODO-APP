@@ -1,0 +1,12 @@
+.dotnet/
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/.angular/
+**/node_modules/
+**/dist/
+**/Data/*.db
+**/Data/*.db-*
+**/Data/Keys/
+Back/TODO_API/TODO_API/appsettings.json

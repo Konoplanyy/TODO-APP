@@ -1,0 +1,51 @@
+<div class="container px-4 py-2 rounded-lg transition-colors shadow-sm flex flex-row gap-4 align-middle">
+  <div class="check-box align-middle flex">
+    <input
+        type="checkbox"
+        [checked]="task().isCompleted"
+        (change)="toggleCompleted()">
+  </div>
+  <div class="task-disc flex flex-col flex-10">
+    <div class="task-name flex justify-start">
+      <p class="name-text text-lg font-bold" [class.line-through]="task().isCompleted" [style.color]="task().isCompleted ? '#c3c2b7' : null">{{task().name}}</p>
+    </div>
+    @if (task().description) {
+      <p class="time-text">{{task().description}}</p>
+    }
+    <div class="task-time flex justify-start">
+      @if (task().isCompleted){
+      <p class="time-text line-through">completed</p>
+      }
+      @else{
+        <p class="time-text">{{task().dueDate | date:'medium'}}</p>
+      }
+    </div>
+  </div>
+  <div class="category-container flex items-center justify-center">
+    <div class="task-category flex justify-center px-4 py-2 rounded-lg transition-colors shadow-sm items-center" [style.background-color]="getLightBackgroundColor(category()?.color ?? '#378add')">
+        <p class="justify-center flex" [style.color]="getDarkColor(category()?.color ?? '#378add')">
+          {{category()?.name ?? 'Category'}}
+        </p>
+    </div>
+  </div>
+  <div class="task-btns flex justify-center gap-2">
+    <button type="button" (click)="edit.emit(task())" aria-label="Edit task">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c3c2b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+       	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+       	<path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+       	<path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415" />
+       	<path d="M16 5l3 3" />
+      </svg>
+    </button>
+    <button type="button" (click)="delete.emit(task())" aria-label="Delete task">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c3c2b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+       	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+       	<path d="M4 7l16 0" />
+       	<path d="M10 11l0 6" />
+       	<path d="M14 11l0 6" />
+       	<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+       	<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+      </svg>
+    </button>
+  </div>
+</div>

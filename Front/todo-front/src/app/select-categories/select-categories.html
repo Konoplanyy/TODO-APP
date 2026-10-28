@@ -1,0 +1,8 @@
+<div class="container px-4 py-2 rounded-lg transition-colors shadow-sm">
+  <select class="select text-lg font-bold h-7" [value]="selectedId()" (change)="selectedIdChange.emit($any($event.target).value)" aria-label="Filter by category">
+    <option value="">All categories</option>
+    @for (category of categories(); track category.id) {
+      <option value="{{category.id}}">{{category.name}}</option>
+    }
+  </select>
+</div>

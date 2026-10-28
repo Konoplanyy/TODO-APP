@@ -1,0 +1,13 @@
+.arrow-btn{
+  background: #171716;
+  color: #f0efec;
+  border: #444444 1px solid;
+  height: 40px;
+  width: 40px;
+}
+
+.selected{
+  background: #1b232c;
+  border: #0d366b 1px solid;
+  color: #6da7ec;
+}

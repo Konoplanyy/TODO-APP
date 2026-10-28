@@ -1,0 +1,37 @@
+<div class="picker">
+  <div class="picker-title">
+    <span>Palette</span>
+    <span class="selected-color"><span class="selected-dot" [style.background-color]="value()"></span>{{value().toUpperCase()}}</span>
+  </div>
+  <div class="presets">
+    @for (preset of presets; track preset.color) {
+      <button type="button" class="preset" [class.active]="value().toLowerCase() === preset.color.toLowerCase()"
+        [attr.aria-label]="'Select ' + preset.name" [attr.aria-pressed]="value().toLowerCase() === preset.color.toLowerCase()"
+        (click)="selectPreset(preset.color)">
+        <span class="preset-dot" [style.background-color]="preset.color"></span>
+        <span>{{preset.name}}</span>
+      </button>
+    }
+  </div>
+
+  <button type="button" class="custom-toggle" [attr.aria-expanded]="showCustom" (click)="showCustom = !showCustom">
+    <span>Custom color</span><span>{{showCustom ? '−' : '+'}}</span>
+  </button>
+
+  @if (showCustom) {
+    <div class="custom-controls">
+      <div class="saturation-area" [style.background-color]="hueColor" role="group" tabindex="0" aria-label="Saturation and brightness, use arrow keys"
+        (pointerdown)="startDrag($event, 'square')" (pointermove)="continueDrag($event, 'square')" (pointerup)="endDrag()" (pointercancel)="endDrag()" (keydown)="onKeyDown($event, 'square')">
+        <span class="square-marker" [style.left.%]="saturation * 100" [style.top.%]="(1 - brightness) * 100"></span>
+      </div>
+      <div class="hue-area" role="slider" tabindex="0" aria-label="Hue" aria-valuemin="0" aria-valuemax="360" [attr.aria-valuenow]="hue"
+        (pointerdown)="startDrag($event, 'hue')" (pointermove)="continueDrag($event, 'hue')" (pointerup)="endDrag()" (pointercancel)="endDrag()" (keydown)="onKeyDown($event, 'hue')">
+        <span class="hue-marker" [style.left.%]="hue / 360 * 100"></span>
+      </div>
+      <label class="hex-field">HEX
+        <input type="text" [value]="value().toUpperCase()" maxlength="7" spellcheck="false" aria-label="HEX color"
+          (change)="onHexChange($event)" />
+      </label>
+    </div>
+  }
+</div>

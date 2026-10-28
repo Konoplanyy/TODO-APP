@@ -1,0 +1,14 @@
+.container {
+  background: #151515;
+}
+
+.task-category {
+  height: 50%;
+}
+.time-text{
+  color: #898781;
+}
+
+.name-text{
+  color: #f0efec;
+}

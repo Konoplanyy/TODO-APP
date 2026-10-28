@@ -1,0 +1,35 @@
+.container {
+  background-color: #151515;
+  width: 100%;
+  min-width: 100px;
+  max-width: 600px;
+}
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+button {
+  width: 100%;
+  display: block;
+}
+.btn-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+.container:hover{
+  background-color: #252525;
+  .btn-text{
+    color: aqua;
+  }
+}
+.selected{
+  background-color: #171f29;
+  &:hover{
+    background-color: #272f39;
+  }
+}
